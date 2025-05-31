@@ -1,78 +1,66 @@
-/* -----左側功能列----- */
 
-function Sidebar() {
-    const styles = {
-        sidebar: {
-            width:'240px',
-            backgroundColor: '#eaddcf', // 我選的側邊欄背景色
-            color: '#eaddcf',
-            padding: '24px',
-            height: 'calc(100vh - 60px)',// Sidebar 高度扣掉 Header，不然會超出頁面
+import './Sidebar.css';
 
-            boxSizing: 'border-box',// 加這行確保 padding 不會把寬度撐爆
-        },
+function Sidebar({ filters, setFilters }) {
+  const handleChange = (e) => {
+    setFilters({
+      ...filters,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-        section: {
-            marginBottom: '20px',
-        },
+  return (
+    <div style={{
+      width: '260px',
+      padding: '24px',
+      backgroundColor: '#D7C4BB',  //側邊欄顏色
+      color: '#333', //側邊欄顏色
+      fontSize: '16px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '20px',
+    }}>
+        <h2 style ={{ color: '#5E4C4C', marginBottom: '15px' }}>設定</h2>
 
-        label: {
-            display: 'block',
-            marginBottom: '6px',
-            fontWeight: 'bold',
-            color: '#eaddcf',
-        },
+        {/* 格位種類 */}
+        <div>
+            <label>格位種類</label><br />
+            <select name="type" value={filters.type} onChange={handleChange} 
+                className="select-box"> {/* 美化下拉選單 */}
+                {/* 原本的: style={{ width: '100%', padding: '6px', marginTop: '4px'}}> */}
+                <option value="">全部</option>
+                <option value="機車格">機車格</option>
+                <option value="汽車格">汽車格</option>
+             </select>
+        </div>
 
-        select: {
-            width: '100%',
-            padding: '6px',
-            backgroundColor: '#8c7851',
-            color: '#ffffff',
-            border: '1px solid #eaddcf',
-            borderRadius: '4px',
-           // fontSize: '14px',
-        },
-        title: { 
-            fontSize: '18px',
-            fontWeight:'bold',
-            marginBottom: '16px',
-            color: '#020826', // 我選的標題顏色
-        }
+      {/* 是否友善 */}
+        <div>
+            <label>友善程度</label><br />
+            <select name="friendly" value={filters.friendly} onChange={handleChange}
+                className="select-box">
+               {/* style={{ width: '100%', padding: '6px', marginTop: '4px'}}*/}
+                <option value="">全部</option>
+                <option value="true">是</option>
+                <option value="false">否</option>
+            </select>
+        </div>
 
-    };
+      {/* 收費方式 */}
+        <div>
+            <label>收費範圍</label><br />
+            <select name="price" value={filters.price} onChange={handleChange}
+                className="select-box">
+                {/*style={{ width: '100%', padding: '6px', marginTop: '4px'}} */}
+                <option value="">全部</option>
+                <option value="免費">免費</option>
+                <option value="每小時">每小時</option>
+                <option value="每日">每日</option>
+            </select>
+        </div>
 
-    return (
-    <aside style={styles.sidebar}>
-      <div style={styles.title}>設定</div>
+    </div>
 
-      <div style={styles.section}>
-        <label style={styles.label}>格位種類</label>
-        <select style={styles.select}>
-          <option>全部</option>
-          <option>機車</option>
-          <option>汽車</option>
-        </select>
-      </div>
-
-      <div style={styles.section}>
-        <label style={styles.label}>友善程度</label>
-        <select style={styles.select}>
-          <option>全部</option>
-          <option>友善</option>
-          <option>不友善</option>
-        </select>
-      </div>
-
-      <div style={styles.section}>
-        <label style={styles.label}>收費範圍</label>
-        <select style={styles.select}>
-          <option>全部</option>
-          <option>免費</option>
-          <option>小時</option>
-          <option>每日</option>
-        </select>
-      </div>
-    </aside>
   );
 }
 

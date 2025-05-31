@@ -20,11 +20,20 @@ function MapPage() {
 
  // 自訂地圖圖示放在這裡
   const customIcon = new L.Icon({
-    iconUrl: '/images/parking-icon.png',
+    iconUrl: '/images/parking-icon.png', // 可停車圖示
     iconSize: [32, 32],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32],
   });
+
+  const cannotParkIcon = new L.Icon({
+    iconUrl: '/images/noparking-icon.png', // 不能停車圖示
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32],
+  });
+
+
 
 
   useEffect(() => {

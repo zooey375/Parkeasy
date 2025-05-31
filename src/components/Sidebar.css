@@ -1,1 +1,16 @@
-/*------- 左側功能列-------*/
+
+.select-box {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #333;
+  font-size: 15px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.select-box:hover {
+  background-color: #eee;
+}

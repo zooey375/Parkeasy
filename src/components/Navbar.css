@@ -1,0 +1,48 @@
+/* --- 導覽列樣式 --- */
+
+/*導覽列容器*/
+.top-navbar {
+    display: flex;  /*讓 LOGO 和按鈕列可以橫向排列*/
+    justify-content: space-between; /* 讓兩側分開 */
+    align-items: center;    /*讓 logo 和按鈕在同一高度*/
+    background-color: #9e7a7a;  /*導覽列顏色*/
+    color: white;   /*文字顏色*/
+    padding: 12px 24px;
+    position: fixed;    /*讓導覽列固定在畫面最上方*/
+    width: 100%;
+    top: 0;
+    z-index: 999;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  /* 限制內容寬度+置中 */
+    max-width: 100%;      /* 或用 1200px 做固定寬度也行 */
+    margin: 0 auto;
+
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+}
+
+/*右側按鈕列*/
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 24px;
+    padding: 0;
+    margin: 0;
+    padding-right: 40px; /*讓右邊的按鈕往左*/
+}
+
+/*按鈕樣式*/
+.nav-links li a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+}
+.nav-links li a:hover {
+    text-decoration: underline;
+}
+

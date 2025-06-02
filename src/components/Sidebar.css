@@ -1,9 +1,35 @@
 
+.sidebar {
+  width: 260px;
+  padding: 24px;
+  background-color: #D7C4BB; /* 背景色 */
+  color: #333;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebar-title {
+  color: #5E4C4C;
+  margin-bottom: 8px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* 每一組「文字+下拉選單」間距統一 */
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* 控制 label 和 select 之間的距離 */
+}
+
+/* 下拉選單樣式統一 */
 .select-box {
   width: 100%;
   padding: 8px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   background-color: #fff;
   color: #333;
   font-size: 15px;
@@ -14,3 +40,11 @@
 .select-box:hover {
   background-color: #eee;
 }
+
+/* 統一所有 label 字體風格 */
+.filter-group label {
+  font-weight: bold;
+  font-size: 16px;
+  color: #555;
+}
+

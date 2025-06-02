@@ -1,17 +1,29 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Home from './components/Home';
+import Profile from './components/Profile';
+import List from './components/List';
+import Admin from './components/Admin';
+import Logout from './components/Logout';
 import MapPage from './components/MapPage';
 
 function App() {
   return (
-    <>
-      {/* 上方導覽列 */}
-      <Navbar />
+    <Router> {/* 開啟 React Router 的功能範圍 */}
+     
+      <Navbar /> {/* 導覽列會一直固定在上方 */}
 
-      {/* 下方地圖主畫面，留 marginTop 避開固定導覽列 */}
+      {/* 每個頁面都會顯示在導覽列下方 */}
       <div style={{ marginTop: '60px', height: 'calc(100vh - 60px)', width: '100%' }}>
-        <MapPage />
+        <Routes>
+          <Route path="/" element={<MapPage />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/list" element={<List />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/logout" element={<Logout />} />
+        </Routes>
       </div>
-    </>
+    </Router>
   );
 }
 

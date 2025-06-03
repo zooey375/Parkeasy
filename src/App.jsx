@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Home from './components/Home';
-import Profile from './components/Profile';
+import FavoritesPage from './components/FavoritesPage';
 import List from './components/List';
 import Admin from './components/Admin';
 import Logout from './components/Logout';
@@ -17,7 +16,7 @@ function App() {
       <div style={{ marginTop: '60px', height: 'calc(100vh - 60px)', width: '100%' }}>
         <Routes>
           <Route path="/" element={<MapPage />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/list" element={<List />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/logout" element={<Logout />} />

@@ -38,15 +38,24 @@ function MapPage() {
 
  // 載入收藏清單
   useEffect(() => {
-    axios.get(`/api/favorites/${userId}`)
+    axios.get(`http://localhost:8086/api/favorites/${userId}`)
       .then((res) => {
-        const favoriteIds = res.data.map(fav => fav.parkingLotId);
-        setFavorites(favoriteIds);
+        const data = res.data;
+        console.log('🎯 成功收藏清單:', data);
+
+        if(Array.isArray(data)) {
+          const favoriteIds = data.map(fav => fav.parkingLotId);
+          setFavorites(favoriteIds);
+        } else {
+          console.warn('⚠️ 後端回傳的收藏資料不是陣列:', data);
+          setFavorites([]); // 避免地圖 map 出錯  
+        }
       })
       .catch(err => {
         console.error('❌ 載入收藏失敗:', err);
       });
-  }, []);
+
+  },[]);
 
   // 當 filters 改變時，重新向後端抓資料
   useEffect(() => {
@@ -70,18 +79,25 @@ function MapPage() {
       .then((res) => res.json())
       .then((data) => {
         console.log('✅ 成功抓到資料:', data);
-        setParkingLots(data);
+        
+        if (Array.isArray(data)) {
+          setParkingLots(data);
+        }else {
+          console.warn('⚠️ 後端回傳的資料不是陣列:', data);
+          setParkingLots([]); // 避免地圖 map 出錯
+        }
       })
       .catch((err) => {
         console.error('❌ 抓資料失敗:', err);
         alert('無法連線到後端，請確認 Spring Boot 是否啟動');
       });
-  }, [filters]);
+    },
+  [filters]);
 
 // 切換收藏狀態(重要)
   const toggleFavorite = (parkingLotId) => {
     if (favorites.includes(parkingLotId)) {
-      axios.delete(`/api/favorites/remove`, {
+      axios.delete(`http://localhost:8086/api/favorites/remove`, {
         params: { userId, parkingLotId }
       })
         .then(() => {
@@ -91,7 +107,7 @@ function MapPage() {
           console.error('❌ 移除收藏失敗:', err);
         });
     } else {
-      axios.post(`/api/favorites/add`, null, {
+      axios.post(`http://localhost:8086/api/favorites/add`, null, {
         params: { userId, parkingLotId }
       })
         .then(() => {
@@ -120,40 +136,35 @@ function MapPage() {
             url='https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
           />
 
-          {/* 顯示每個停車場地標 */}
-          {parkingLots.map((lot) => {
-            // debug Log
-            //console.log(' friendly 值:' , lot.friendly, '類別:',typeof lot.friendly);
+            {/* 顯示每個停車場地標 */}
+            {Array.isArray(parkingLots) && 
+              parkingLots.map((lot) => {
+               if (!lot.latitude || !lot.longitude) return null; // 防呆：無經緯度就不畫
+                const iconToUse = lot.friendly ? canParkIcon : cannotParkIcon;// 根據是否友善決定圖示
 
-            // 防呆：無經緯度就不畫
-            if (!lot.latitude || !lot.longitude) return null;
-
-            // 根據是否友善決定圖示
-            const iconToUse = lot.friendly ? canParkIcon : cannotParkIcon;
-
-            return (
-              <Marker
-                key={lot.id}
-                position={[lot.latitude, lot.longitude]}
-                icon={iconToUse}
-              >
-                <Popup>
-                  <strong>{lot.name}</strong><br />
-                  類型：{lot.type}<br />
-                  友善：{lot.friendly ? '✅ 是' : '❌ 否'}<br />
-                  收費：{lot.price}<br />
-                  地址：<a href={lot.mapUrl} target="_blank" rel="noreferrer">查看地圖</a><br />
-                  備註：{lot.description}<br />
-                  <button
-                    onClick={() => toggleFavorite(lot.id)}
-                    style={{ marginTop: '8px', padding: '4px 8px', borderRadius: '6px' }}
+                return (
+                  <Marker
+                    key={lot.id}
+                   position={[lot.latitude, lot.longitude]}
+                   icon={iconToUse}
                   >
-                    {favorites.includes(lot.id) ? '💔 取消收藏' : '❤️ 加入收藏'}
-                  </button>
-                </Popup>
-              </Marker>
-            );
-          })}
+                    <Popup>
+                      <strong>{lot.name}</strong><br />
+                      類型：{lot.type}<br />
+                      友善：{lot.friendly ? '✅ 是' : '❌ 否'}<br />
+                      收費：{lot.price}<br />
+                      地址：<a href={lot.mapUrl} target="_blank" rel="noreferrer">查看地圖</a><br />
+                      備註：{lot.description}<br />
+                      <button
+                        onClick={() => toggleFavorite(lot.id)}
+                        style={{ marginTop: '8px', padding: '4px 8px', borderRadius: '6px' }}
+                      >
+                        {favorites.includes(lot.id) ? '💔 取消收藏' : '❤️ 加入收藏'}
+                      </button>
+                    </Popup>
+                  </Marker>
+              );
+            })}
         </MapContainer>
       </div>
     </div>

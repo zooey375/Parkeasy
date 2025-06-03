@@ -41,7 +41,7 @@ function MapPage() {
     axios.get(`http://localhost:8086/api/favorites/${userId}`)
       .then((res) => {
         const data = res.data;
-        console.log('🎯 成功收藏清單:', data);
+        console.log('✅ 成功收藏清單:', data);
 
         if(Array.isArray(data)) {
           const favoriteIds = data.map(fav => fav.parkingLotId);
@@ -78,7 +78,7 @@ function MapPage() {
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        console.log('✅ 成功抓到資料:', data);
+        console.log('🎯 成功抓到資料:', data);
         
         if (Array.isArray(data)) {
           setParkingLots(data);

@@ -97,16 +97,14 @@ function MapPage() {
 // 切換收藏狀態(重要)
   const toggleFavorite = (parkingLotId) => {
     if (favorites.includes(parkingLotId)) {
-      axios.delete(`http://localhost:8086/api/favorites/remove`, {
-        params: { userId, parkingLotId }
-      })
+      axios.delete(`http://localhost:8086/api/favorites/${userId}/${parkingLotId}`)
         .then(() => {
           setFavorites(prev => prev.filter(id => id !== parkingLotId));
         })
         .catch(err => {
           console.error('❌ 移除收藏失敗:', err);
         });
-    } else {
+    } else { //尚未收藏->加入收藏
       axios.post(`http://localhost:8086/api/favorites/add`, null, {
         params: { userId, parkingLotId }
       })

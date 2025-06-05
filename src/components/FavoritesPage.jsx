@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from 'axios'; // 用來發送 HTTP 請求的套件(類似fetch但更方便)
 
 function FavoritesPage() {
+
+  // 加入收藏
   const [favorites, setFavorites] = useState([]);
   const userId = 1; // 模擬登入使用者 ID
 
@@ -21,11 +23,12 @@ function FavoritesPage() {
 
   // 取消收藏
   const removeFavorite = (parkingLotId) => {
-    axios.delete(`/api/favorites/remove`, {
-      params: { userId, parkingLotId }
-    }).then(() => {
-      setFavorites(prev => prev.filter(f => f.parkingLotId !== parkingLotId));
-    }).catch(err => {
+    axios.delete(`http://localhost:8086/api/favorites/${userId}/${parkingLotId}`)
+    .then(() => {
+      // 用 id 判斷是否移除成功(不是 parkingLotId)
+      setFavorites(prev => prev.filter(fav=> fav.id !== parkingLotId));
+    })
+    .catch(err => {
       console.error('😿 移除收藏失敗:', err);
     });
   };
@@ -40,7 +43,7 @@ function FavoritesPage() {
           {favorites.map(fav => (
             <li key={fav.id} style={{ border: '1px solid #ccc', marginBottom: '10px', padding: '10px', borderRadius: '10px' }}>
               <p><strong>停車場編號：</strong>{fav.parkingLotId}</p>
-              <button onClick={() => removeFavorite(fav.parkingLotId)}>💔 取消收藏</button>
+              <button onClick={() => removeFavorite(fav.id)}>💔 移除收藏</button>
             </li>
           ))}
         </ul>

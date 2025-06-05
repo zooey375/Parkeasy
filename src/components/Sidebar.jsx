@@ -39,17 +39,14 @@ function Sidebar({ filters, setFilters }) {
         <select
           value={filters.maxprice}
           onChange={(e) => setFilters({ ...filters, maxprice: e.target.value })}
-          className="select-box"
-        >
-          <option value="">全部</option>
-          {[...Array(11)].map((_, i) => {
-            const value = i * 10;
-            return (
-              <option key={value} value={value}>
-                {`0 ~ ${value} 元`}
-              </option>
-            );
-          })}
+          className="select-box">
+
+          {[10, 20, 30, 40, 50, 60, 70, 80, 90 ,100].map((value) => (
+            <option key={value} value={value}>
+            {`0 ~ ${value} 元`}
+          </option>
+          ))}
+
         </select>
       </div>
     </div>

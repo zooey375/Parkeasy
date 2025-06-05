@@ -41,9 +41,33 @@ function FavoritesPage() {
       ) : (
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {favorites.map(fav => (
-            <li key={fav.id} style={{ border: '1px solid #ccc', marginBottom: '10px', padding: '10px', borderRadius: '10px' }}>
-              <p><strong>停車場編號：</strong>{fav.parkingLotId}</p>
-              <button onClick={() => removeFavorite(fav.id)}>💔 移除收藏</button>
+            <li key={fav.id} style={{ 
+              border: '1px solid #ccc', 
+              marginBottom: '15px', 
+              padding: '15px', 
+              borderRadius: '12px', 
+              backgroundColor: '#f9f9f9', // 增加背景色
+              boxShadow: '0 2px 6px rgba(0,0,0,0.1)', // 增加陰影效果
+              }}>
+                {/* h3 -> 顯示停車場名稱*/}
+                <h3 style={{ marginBottom: '8px' }}>{fav.name}</h3> 
+                <p><strong>類型:</strong>{fav.type}</p>
+                <p><strong>友善:</strong>{fav.friendly ? '⭕ 是' : '❌ 否'}</p>
+                <p><strong>收費:</strong>{fav.price} 元</p>
+                <p><strong>地址:</strong><a href={fav.mapUrl} target="_blank" rel="noreferrer">查看地圖</a></p>
+                <p><strong>備註:</strong>{fav.description}</p>
+                <button 
+                onClick={() => removeFavorite(fav.id)}
+                style={{
+                  marginTop: '10px',
+                  padding: '6px 12px',
+                  backgroundColor: '#ff6666',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                }}
+                >💔 移除收藏</button>
             </li>
           ))}
         </ul>

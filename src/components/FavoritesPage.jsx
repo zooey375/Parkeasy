@@ -54,7 +54,7 @@ function FavoritesPage() {
                 <p><strong>類型:</strong>{fav.type}</p>
                 <p><strong>友善:</strong>{fav.friendly ? '⭕ 是' : '❌ 否'}</p>
                 <p><strong>收費:</strong>{fav.price} 元</p>
-                <p><strong>地址:</strong><a href={fav.mapUrl} target="_blank" rel="noreferrer">查看地圖</a></p>
+                <p><strong>地址:</strong><a href={fav.mapUrl} target="_blank" rel="noreferrer">GoogleMap</a></p>
                 <p><strong>備註:</strong>{fav.description}</p>
                 <button 
                 onClick={() => removeFavorite(fav.id)}

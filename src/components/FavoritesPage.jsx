@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios'; // 用來發送 HTTP 請求的套件(類似fetch但更方便)
+import { Card, Button, Container, Row, Col } from 'react-bootstrap';
+
 
 function FavoritesPage() {
 
@@ -34,45 +36,38 @@ function FavoritesPage() {
   };
     
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>💜 我的收藏清單</h2>
-      {Array.isArray(favorites) && favorites.length ===0 ? (
+    <Container calssName="my-4">
+      <h2 className="mb-4">💜 我的收藏清單</h2>
+      {favorites.length === 0 ? (
         <p>目前沒有收藏任何停車場。</p>
       ) : (
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          {favorites.map(fav => (
-            <li key={fav.id} style={{ 
-              border: '1px solid #ccc', 
-              marginBottom: '15px', 
-              padding: '15px', 
-              borderRadius: '12px', 
-              backgroundColor: '#f9f9f9', // 增加背景色
-              boxShadow: '0 2px 6px rgba(0,0,0,0.1)', // 增加陰影效果
-              }}>
-                {/* h3 -> 顯示停車場名稱*/}
-                <h3 style={{ marginBottom: '8px' }}>{fav.name}</h3> 
-                <p><strong>類型:</strong>{fav.type}</p>
-                <p><strong>友善:</strong>{fav.friendly ? '😻 是' : '😿 否'}</p>
-                <p><strong>收費:</strong>{fav.price} 元</p>
-                <p><strong>地址:</strong><a href={fav.mapUrl} target="_blank" rel="noreferrer">GoogleMap</a></p>
-                <p><strong>備註:</strong>{fav.description}</p>
-                <button 
-                onClick={() => removeFavorite(fav.id)}
-                style={{
-                  marginTop: '10px',
-                  padding: '6px 12px',
-                  backgroundColor: '#ff6666',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                }}
-                >💔 移除收藏</button>
-            </li>
+        <Row xs={1} md={2} className="g-4">
+          {favorites.map((fav) => (
+            <Col key={fav.id}>
+              <Card className="h-100 shadow-sm">
+                <Card.Body>
+                  <Card.Title>{fav.name}</Card.Title>
+                  <Card.Text>
+                    📍 類型 : {fav.type} <br />
+                    😺友善 : {fav.friendyly ? '😻 是' : '😿 否'} <br />
+                    💰 收費 : {fav.price} 元<br />
+                    🏠 地址 : 
+                    <a href={fav.mapUrl} target="_blank" rel="noreferrer">🗺️GoogleMap
+                    </a><br />
+                    📝 備註 : {fav.description}
+
+                  </Card.Text>
+                  <Button variant="danger" onClick={() => removeFavorite(fav.id)}>
+                    💔 移除收藏
+                  </Button>
+
+                </Card.Body>
+              </Card>
+            </Col>
           ))}
-        </ul>
+        </Row>
       )}
-    </div>
+    </Container>  
   );
 }
 

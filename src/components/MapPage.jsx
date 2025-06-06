@@ -149,9 +149,9 @@ function MapPage() {
                     <Popup>
                       <strong>{lot.name}</strong><br />
                       類型：{lot.type}<br />
-                      友善：{lot.friendly ? '✅ 是' : '❌ 否'}<br />
+                      友善：{lot.friendly ? '😻 是' : '😿 否'}<br />
                       收費：{lot.price}<br />
-                      地址：<a href={lot.mapUrl} target="_blank" rel="noreferrer">查看地圖</a><br />
+                      地址：<a href={lot.mapUrl} target="_blank" rel="noreferrer">GoogleMap</a><br />
                       備註：{lot.description}<br />
                       <button
                         onClick={() => toggleFavorite(lot.id)}

@@ -52,7 +52,7 @@ function FavoritesPage() {
                 {/* h3 -> 顯示停車場名稱*/}
                 <h3 style={{ marginBottom: '8px' }}>{fav.name}</h3> 
                 <p><strong>類型:</strong>{fav.type}</p>
-                <p><strong>友善:</strong>{fav.friendly ? '⭕ 是' : '❌ 否'}</p>
+                <p><strong>友善:</strong>{fav.friendly ? '😻 是' : '😿 否'}</p>
                 <p><strong>收費:</strong>{fav.price} 元</p>
                 <p><strong>地址:</strong><a href={fav.mapUrl} target="_blank" rel="noreferrer">GoogleMap</a></p>
                 <p><strong>備註:</strong>{fav.description}</p>

@@ -39,28 +39,29 @@ function Sidebar({ filters, setFilters }) {
 
       {/* 收費範圍:調整成下拉式自由選單 */}
       <div className="filter-group">
-        <label className="price-range-label">收費範圍</label>
-        <select
-          name="minprice"
-          value={filters.minprice}
-          onChange={(e) =>setFilters({ ... filters, minprice: e.target.value })}
-          className="select-box">
-          {[0, 10, 20, 30, 40, 50].map((value) => (
-            <option key={value} value={value}>{value}</option>
-          ))}
-        </select>
+        <label className="price-range-label">收費範圍(元)</label>
+        <div className="price-select-row"> {/* 選單橫向排版 */}
+          <select
+            name="minprice"
+            value={filters.minprice}
+            onChange={(e) =>setFilters({ ... filters, minprice: e.target.value })}
+            className="select-box">
+            {[0, 10, 20, 30, 40, 50].map((value) => (
+              <option key={value} value={value}>{value}</option>
+            ))}
+          </select>
 
-        <span> ~ </span>
-        <select
-          name="maxprice" 
-          value={filters.maxprice} 
-          onChange={(e) => setFilters({ ...filters, maxprice: e.target.value })} 
-          className="select-box">
-          {[50, 60, 70, 80, 90, 100].map((value) => (
-            <option key={value} value={value}>{value}</option>
-          ))}
-        </select>
-
+          <span className="price-separator"> ~ </span> {/* 選單橫向排版 */}
+          <select
+            name="maxprice" 
+            value={filters.maxprice} 
+            onChange={(e) => setFilters({ ...filters, maxprice: e.target.value })} 
+            className="select-box">
+            {[50, 60, 70, 80, 90, 100].map((value) => (
+              <option key={value} value={value}>{value}</option>
+            ))}
+          </select>
+        </div>
       </div>
     </div>
   );

@@ -5,11 +5,14 @@ import FavoritesPage from './components/FavoritesPage';
 import ParkingListPage from './components/ParkingListPage';
 import AdminPage from './components/AdminPage';
 import LogoutPage from './components/LogoutPage';
+import ScrollToTop from './components/ScrollToTop';  // 自動捲到頂部的功能
+
 
 
 function App() {
   return (
     <Router> {/* 開啟 React Router 的功能範圍 */}
+      <ScrollToTop /> {/* 每次切換頁面時自動捲到頂部 */}
      
       <Navbar /> {/* 導覽列會一直固定在上方 */}
 
@@ -25,7 +28,7 @@ function App() {
         </Routes>
         
       </div>
-      
+
     </Router>
   );
 }

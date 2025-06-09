@@ -1,5 +1,15 @@
-/* --- 導覽列樣式 --- */
+/* 覆蓋 Bootstrap 的深色導覽列背景 */
+.custom-navbar {
+  background-color: #9e7a7a !important; /* 導覽列背景色 */
+}
 
+/* 可選：導覽列內文字 hover 時效果 */
+.custom-navbar .nav-link:hover {
+  color: #ffdcdc !important; /* 柔和的粉色 hover 效果 */
+}
+
+
+/* --- 以下導覽列樣式(目前沒用了可以備用) --- */
 /*導覽列容器*/
 .top-navbar {
     display: flex;  /*讓 LOGO 和按鈕列可以橫向排列*/

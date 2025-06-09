@@ -1,10 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import FavoritesPage from './components/FavoritesPage';
-import List from './components/List';
-import Admin from './components/Admin';
-import Logout from './components/Logout';
+import Navbar from './components/Navbar'; // 共用元件
 import MapPage from './components/MapPage';
+import FavoritesPage from './components/FavoritesPage';
+import ParkingListPage from './components/ParkingListPage';
+import AdminPage from './components/AdminPage';
+import LogoutPage from './components/LogoutPage';
+
 
 function App() {
   return (
@@ -17,11 +18,14 @@ function App() {
         <Routes>
           <Route path="/" element={<MapPage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
-          <Route path="/list" element={<List />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/logout" element={<Logout />} />
+          <Route path="/list" element={<ParkingListPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/logout" element={<LogoutPage />} />
+        
         </Routes>
+        
       </div>
+      
     </Router>
   );
 }

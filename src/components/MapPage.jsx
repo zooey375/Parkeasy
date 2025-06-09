@@ -13,6 +13,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
+/*-----自訂圖示設定-----*/
 // 可停車圖示-友善（friendly = true）
 const canParkIcon = new L.Icon({
   iconUrl: '/images/parking-icon.png', // 放在 public/images/
@@ -29,11 +30,23 @@ const cannotParkIcon = new L.Icon({
   popupAnchor: [0, -32],
 });
 
+// 調整價錢： minprice 和 maxprice 改成下拉式選單
+/*const query = new URLSearchParams();
+if(filters.type) query.append('type', filters.friendly);
+if(filters.friendly) query.append('friendly', filters.friendly);
+if(filters.minprice) query.append('minprice', filters.minprice);
+if(filters.maxprice) query.append('maxprice', filters.maxprice);
+*/
+
 function MapPage() {
-  const [filters, setFilters] = useState({ type: '', friendly: '', maxprice: '' });
+  const [filters, setFilters] = useState({ type: '', 
+    friendly: '', 
+    minprice: '', 
+    maxprice: '' 
+  });
+
   const [parkingLots, setParkingLots] = useState([]);
   const [favorites, setFavorites] = useState([]); // 收藏的停車場列表
-
   const userId = 1; // ← 之後登入功能完成可改為動態 userId
 
  // 載入收藏清單
@@ -62,37 +75,29 @@ function MapPage() {
     const query = new URLSearchParams();
     if (filters.type) query.append('type', filters.type);
     if (filters.friendly) query.append('friendly', filters.friendly);
+    if (filters.minprice) query.append('minprice', filters.minprice);
     if (filters.maxprice) query.append('maxprice', filters.maxprice);
 
     const url = `http://localhost:8086/parking-lots/search?${query.toString()}`;
     console.log('傳送查詢網址:', url);
 
-    /*const url = query.toString() === ''
-      ? 'http://localhost:8086/parking-lots'
-      : `http://localhost:8086/parking-lots/search?${query.toString()}`;
-    */
-      /* 測試用，查出瀏覽器 console 中是送出「http://localhost:8086/parking-lots」
-        而不是「http://localhost:8086/parking-lots/search?maxprice=20」   
-      */
-
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        console.log('🎯 成功抓到資料:', data);
-        
+      console.log('🎯 成功抓到資料:', data);
+
         if (Array.isArray(data)) {
           setParkingLots(data);
         }else {
-          console.warn('⚠️ 後端回傳的資料不是陣列:', data);
           setParkingLots([]); // 避免地圖 map 出錯
+          console.warn('⚠️ 後端回傳的資料不是陣列:', data);
         }
       })
       .catch((err) => {
         console.error('❌ 抓資料失敗:', err);
         alert('無法連線到後端，請確認 Spring Boot 是否啟動');
       });
-    },
-  [filters]);
+    },[filters]);
 
 // 切換收藏狀態(重要)
   const toggleFavorite = (parkingLotId) => {
@@ -144,8 +149,7 @@ function MapPage() {
                   <Marker
                     key={lot.id}
                    position={[lot.latitude, lot.longitude]}
-                   icon={iconToUse}
-                  >
+                   icon={iconToUse}>
                     <Popup>
                       <strong>{lot.name}</strong><br />
                       類型：{lot.type}<br />

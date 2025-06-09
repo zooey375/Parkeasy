@@ -48,3 +48,17 @@
   color: #555;
 }
 
+/* 設定收費範圍的樣式 */
+.price-range-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #5fffd6;
+}
+
+.price-range-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+

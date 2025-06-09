@@ -36,7 +36,7 @@ function FavoritesPage() {
   };
     
   return (
-    <Container calssName="my-4">
+    <Container className="my-4">
       <h2 className="mb-4">💜 我的收藏清單</h2>
       {favorites.length === 0 ? (
         <p>目前沒有收藏任何停車場。</p>

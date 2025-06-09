@@ -1,5 +1,6 @@
-
+// 側邊欄
 import './Sidebar.css';
+
 
 function Sidebar({ filters, setFilters }) {
   const handleChange = (e) => {
@@ -8,6 +9,9 @@ function Sidebar({ filters, setFilters }) {
       [e.target.name]: e.target.value,
     });
   };
+
+  // 預設價格選項(調整為兩個下拉式選單，讓使用者自由選擇價錢)
+  const priceOptions = Array.from({ length: 11 }, (_, i) => i *10);  
 
   return (
     <div className="sidebar">
@@ -33,21 +37,30 @@ function Sidebar({ filters, setFilters }) {
         </select>
       </div>
 
-      {/* 收費範圍 */}
+      {/* 收費範圍:調整成下拉式自由選單 */}
       <div className="filter-group">
-        <label>收費範圍</label>
+        <label className="price-range-label">收費範圍</label>
         <select
-          value={filters.maxprice}
-          onChange={(e) => setFilters({ ...filters, maxprice: e.target.value })}
+          name="minprice"
+          value={filters.minprice}
+          onChange={(e) =>setFilters({ ... filters, minprice: e.target.value })}
           className="select-box">
-
-          {[10, 20, 30, 40, 50, 60, 70, 80, 90 ,100].map((value) => (
-            <option key={value} value={value}>
-            {`0 ~ ${value} 元`}
-          </option>
+          {[0, 10, 20, 30, 40, 50].map((value) => (
+            <option key={value} value={value}>{value}</option>
           ))}
-
         </select>
+
+        <span> ~ </span>
+        <select
+          name="maxprice" 
+          value={filters.maxprice} 
+          onChange={(e) => setFilters({ ...filters, maxprice: e.target.value })} 
+          className="select-box">
+          {[50, 60, 70, 80, 90, 100].map((value) => (
+            <option key={value} value={value}>{value}</option>
+          ))}
+        </select>
+
       </div>
     </div>
   );

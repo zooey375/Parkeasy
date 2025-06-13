@@ -1,0 +1,57 @@
+/* --- 後台管理葉面內邊距(讓內容不會貼邊) --- */
+.admin-container {
+    padding: 20px; /* 四邊留空隙*/
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* --- 「新增停車場」輸入區 --- */
+.form-group {
+    display: flex;  /* 使用 flex 排版，讓欄位橫著或自動換行 */
+    flex-wrap:wrap; /* 自動換行 */
+    gap: 10px;
+    margin-bottom: 30px;    /* 整塊新增表單區與下方清單保留 20px 空隙 */
+}
+
+/* --- 每個輸入框(input)樣式 --- */
+.form-group input {
+    padding: 5px;
+    flex: 1 1 200px;    /* 表示欄位"寬度最小是200px"，但可以隨容器變化自動縮放 */
+}
+
+/* --- 新增 --- */
+.form-field {
+    flex: 1 1 150px;
+}
+
+.input, select {
+    width: 100%;
+    padding: 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+/* --- 所有按鈕的樣式 --- */
+button {
+    padding: 5px, 10px;
+    background-color: #9e7a7a;
+    color: white;   /* 文字 */
+    border: none;   /* 拿掉預設邊框 */
+    border-radius: 6px; /* 圓角 */
+    cursor: pointer;    /* 滑鼠游標變成小手圖示 */
+}
+
+/* --- 互動滑鼠移上去背景色會變深 --- */
+button:hover {
+    background-color: #805a5a;
+}
+
+/* ---  --- */
+.lot-list li {
+        margin-bottom: 10px;
+}    
+
+/* --- 新增 --- */
+.btn-group {
+    margin-top: 8px;
+}

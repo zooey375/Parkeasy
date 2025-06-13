@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet';
+import L from 'leaflet';  //設定 icon、地圖圖層的核心
 import 'leaflet/dist/leaflet.css';
 import Sidebar from './Sidebar'; // 左側篩選欄元件
-import axios from 'axios'; //npm install axios
+import axios from 'axios'; //npm install axios(負責與後端溝通的套件（GET/POST/DELETE))
 
-// Leaflet 預設圖示設定修正（不修正會出現圖示不顯示錯誤）
+// Leaflet 預設圖示設定修正（讓 Marker 正常顯示 Leaflet 的預設圖示，否則會顯示錯誤的問號）
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -18,8 +18,8 @@ L.Icon.Default.mergeOptions({
 const canParkIcon = new L.Icon({
   iconUrl: '/images/parking-icon.png', // 放在 public/images/
   iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32],
+  iconAnchor: [16, 32], // 圖示的「底部中央」會貼在座標點上。
+  popupAnchor: [0, -32],  //定義「彈出視窗」與圖示之間的相對位置。
 });
 
 // 不可停車圖示-不友善（friendly = false）
@@ -78,7 +78,7 @@ function MapPage() {
     if (filters.minprice) query.append('minprice', filters.minprice);
     if (filters.maxprice) query.append('maxprice', filters.maxprice);
 
-    const url = `http://localhost:8086/parking-lots/search?${query.toString()}`;
+    const url = `http://localhost:8086/api/parkinglots/search?${query.toString()}`;
     console.log('傳送查詢網址:', url);
 
     fetch(url)
@@ -122,6 +122,7 @@ function MapPage() {
     }
   };
 
+  // 畫面排版+地圖回傳
   return (
     <div style={{ display: 'flex', height: '100vh', width: '100%', margin: 0 }}>
       {/* 左側篩選欄位 */}

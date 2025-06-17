@@ -4,6 +4,8 @@ import L from 'leaflet';  //設定 icon、地圖圖層的核心
 import 'leaflet/dist/leaflet.css';
 import Sidebar from './Sidebar'; // 左側篩選欄元件
 import axios from 'axios'; //npm install axios(負責與後端溝通的套件（GET/POST/DELETE))
+import useAuthGuard from '../hooks/useAuthGuard';
+
 
 // Leaflet 預設圖示設定修正（讓 Marker 正常顯示 Leaflet 的預設圖示，否則會顯示錯誤的問號）
 delete L.Icon.Default.prototype._getIconUrl;
@@ -15,42 +17,45 @@ L.Icon.Default.mergeOptions({
 
 /*-----自訂圖示設定-----*/
 // 可停車圖示-友善（friendly = true）
-const canParkIcon = new L.Icon({
-  iconUrl: '/images/parking-icon.png', // 放在 public/images/
-  iconSize: [32, 32],
-  iconAnchor: [16, 32], // 圖示的「底部中央」會貼在座標點上。
-  popupAnchor: [0, -32],  //定義「彈出視窗」與圖示之間的相對位置。
-});
+    const canParkIcon = new L.Icon({
+      iconUrl: '/images/parking-icon.png', // 放在 public/images/
+      iconSize: [32, 32],
+      iconAnchor: [16, 32], // 圖示的「底部中央」會貼在座標點上。
+      popupAnchor: [0, -32],  //定義「彈出視窗」與圖示之間的相對位置。
+    });
 
-// 不可停車圖示-不友善（friendly = false）
-const cannotParkIcon = new L.Icon({
-  iconUrl: '/images/noparking-icon.png',
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32],
-});
-
-// 調整價錢： minprice 和 maxprice 改成下拉式選單
-/*const query = new URLSearchParams();
-if(filters.type) query.append('type', filters.friendly);
-if(filters.friendly) query.append('friendly', filters.friendly);
-if(filters.minprice) query.append('minprice', filters.minprice);
-if(filters.maxprice) query.append('maxprice', filters.maxprice);
-*/
+    // 不可停車圖示-不友善（friendly = false）
+    const cannotParkIcon = new L.Icon({
+      iconUrl: '/images/noparking-icon.png',
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32],
+    });
 
 function MapPage() {
+  // 驗證登入狀態
+  useAuthGuard(); // 呼叫這個函式，未登入就會被自動導去登入頁面。
+
+
+  // 狀態與邏輯const
   const [filters, setFilters] = useState({ type: '', 
     friendly: '', 
     minprice: '', 
     maxprice: '' 
   });
-
   const [parkingLots, setParkingLots] = useState([]);
   const [favorites, setFavorites] = useState([]); // 收藏的停車場列表
-  const userId = 1; // ← 之後登入功能完成可改為動態 userId
+  const userId = localStorage.getItem('userId'); // 從localStorage抓(動態抓)
 
- // 載入收藏清單
+
+ // 載入使用者的收藏清單(抓資料)(useEffect處理收藏)
   useEffect(() => {
+    const userId = localStorage.getItem('userId');
+    if(!userId) {
+      console.warn("🔒 尚未登入，無法載入收藏清單");
+      return; // 沒登入就不會呼叫 API。
+    }
+
     axios.get(`http://localhost:8086/api/favorites/${userId}`)
       .then((res) => {
         const data = res.data;
@@ -70,7 +75,7 @@ function MapPage() {
 
   },[]);
 
-  // 當 filters 改變時，重新向後端抓資料
+  // 當 filters 改變時，重新向後端抓資料(useEffect處理地圖資料)
   useEffect(() => {
     const query = new URLSearchParams();
     if (filters.type) query.append('type', filters.type);
@@ -85,7 +90,6 @@ function MapPage() {
       .then((res) => res.json())
       .then((data) => {
       console.log('🎯 成功抓到資料:', data);
-
         if (Array.isArray(data)) {
           setParkingLots(data);
         }else {
@@ -98,6 +102,7 @@ function MapPage() {
         alert('無法連線到後端，請確認 Spring Boot 是否啟動');
       });
     },[filters]);
+
 
 // 切換收藏狀態(重要)
   const toggleFavorite = (parkingLotId) => {

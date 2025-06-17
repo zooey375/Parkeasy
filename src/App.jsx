@@ -4,8 +4,10 @@ import MapPage from './components/MapPage';
 import FavoritesPage from './components/FavoritesPage';
 import ParkingListPage from './components/ParkingListPage';
 import AdminPage from './components/AdminPage';
-import LogoutPage from './components/LogoutPage';
 import ScrollToTop from './components/ScrollToTop';  // 自動捲到頂部的功能
+import AuthPage from './components/AuthPage';
+import MemberListPage from './components/MemberListPage';
+
 
 
 
@@ -23,8 +25,9 @@ function App() {
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/list" element={<ParkingListPage />} />
           <Route path="/admin" element={<AdminPage />} />
-          <Route path="/logout" element={<LogoutPage />} />
-        
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/members" element={<MemberListPage />} />
+
         </Routes>
         
       </div>

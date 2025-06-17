@@ -2,8 +2,12 @@ import { useEffect, useState } from 'react';
 import axios from 'axios'; // 使用 axios 來發送 HTTP 請求
 import { Card, Button, Container, Row, Col } from 'react-bootstrap'; 
 // Container:外框容器、 Row + Col:卡片排版、Card :卡片格式。
+import useAuthGuard from '../hooks/useAuthGuard';
+
 
 function ParkingListPage() {
+    useAuthGuard();
+
     const [parkingLots, setParkingLots] = useState([]);
 
     // 載入所有停車場資料 (只會執行一次)
@@ -23,7 +27,7 @@ function ParkingListPage() {
         <Container className="my-4">
             <h2 className="mb-4">所有停車場清單</h2>
             
-            {parkingLots.lenght === 0 ? (
+            {parkingLots.length === 0 ? (
                 <p>目前尚無任何停車場資料。</p>
             ) : (
                 <Row xs={1} md={2} lg={3} className="g-4">

@@ -35,7 +35,7 @@ function AdminPage() {
 
   // 新增停車場資料
   const handleAdd = () => {
-    // 守門員
+    // 守門員:會檢查newLot物件中，有沒有填寫name、type、price這三個欄位，只要一個沒有填寫就會跳出警告訊息，並用return中斷函式，不會繼續執行「送資料到後端」的動作。
     if (!newLot.name || !newLot.type || !newLot.price) {
         alert("請填寫必要欄位 (名稱、格位種類、價格) ");
         return;

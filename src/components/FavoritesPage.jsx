@@ -1,19 +1,35 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; //使用navigate
 import axios from 'axios'; // 用來發送 HTTP 請求的套件(類似fetch但更方便)
 import { Card, Button, Container, Row, Col } from 'react-bootstrap';
-
+import useAuthGuard from '../hooks/useAuthGuard';
 
 function FavoritesPage() {
 
+  useAuthGuard(); // 呼叫這個函式，未登入就會被自動導去登入頁面。
+  
   // 加入收藏
   const [favorites, setFavorites] = useState([]);
-  const userId = 1; // 模擬登入使用者 ID
+  const navigate = useNavigate(); 
 
   // 載入使用者收藏的資料
   useEffect(() => {
+    const user = localStorage.getItem('loggedInUser');
+    if(!user) {
+      alert("請先登入 !");
+      navigate("/auth");
+      return;
+    }
+  // 實際抓 userId
+    const userId = localStorage.getItem('userId');  // 請確保登入成功有存這個
+    if(!userId) {
+      alert("使用者資料遺失，請重新登入。");
+      navigate("/auth");
+      return;
+    }
+
     axios.get(`http://localhost:8086/api/favorites/${userId}`)
     //axios.get(`/api/favorites/${userId}`) <-錯誤，會打到 React 自己
-
       .then((res) => {
         console.log('🪄 成功載入收藏清單:', res.data);
         setFavorites(res.data);
@@ -21,10 +37,11 @@ function FavoritesPage() {
       .catch((err) => {
         console.error('😿 載入收藏清單失敗:', err);
       });
-  }, []);
+  }, [navigate]);
 
   // 取消收藏
   const removeFavorite = (parkingLotId) => {
+    const userId = localStorage.getItem('userId');
     axios.delete(`http://localhost:8086/api/favorites/${userId}/${parkingLotId}`)
     .then(() => {
       // 用 id 判斷是否移除成功(不是 parkingLotId)
@@ -49,7 +66,7 @@ function FavoritesPage() {
                   <Card.Title>{fav.name}</Card.Title>
                   <Card.Text>
                     📍 類型 : {fav.type} <br />
-                    😺友善 : {fav.friendyly ? '😻 是' : '😿 否'} <br />
+                    😺友善 : {fav.friendly ? '😻 是' : '😿 否'} <br />
                     💰 收費 : {fav.price} 元<br />
                     🏠 地址 : 
                     <a href={fav.mapUrl} target="_blank" rel="noreferrer">🗺️GoogleMap

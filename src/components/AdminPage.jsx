@@ -1,6 +1,8 @@
 /* --- 後台管理頁面 --- */
 
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+
 import './AdminPage.css';
 
 function AdminPage() {
@@ -128,7 +130,12 @@ function AdminPage() {
     <div className="admin-container">
       <h2>後台管理 - 停車場資料管理</h2>
 
-      {/* 新增表單 */}
+      {/* 新增會員管理按鈕 */}
+      <Link to="/admin/users">
+        <button style={{ marginBottom: "20px" }}>👥 會員管理</button>
+      </Link>
+
+      {/* 新增停車場表單 */}
       <div className="form-group">
         {Object.keys(newLot).map((key) => (
           <div className="form-field" key={key}>

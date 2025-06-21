@@ -1,6 +1,6 @@
 // Navbar as BsNavbar : 將 react-bootstrap 的 Navbar 取別名，避免與自訂的 Navbar 名稱打架。
 import { useContext } from 'react';
-import { Navbar as BsNavbar, Nav, Container, Button } from 'react-bootstrap';
+import { Navbar as BsNavbar, Nav, NavDropdown, Container, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from './AuthContext';
 import './Navbar.css';
@@ -43,13 +43,21 @@ function Navbar() {
           
           {/* 管理員限定功能（只有 ADMIN 看得到) */}
             {user?.role === "ADMIN" && (
-                <Nav.Link as={Link} to="/admin">後台管理</Nav.Link>
+                <NavDropdown title="後台管理" id="admin-nav-dropdown">
+                  <NavDropdown.Item as={Link} to="/admin/users">會員管理</NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/admin/parkinglots">停車場管理</NavDropdown.Item>
+                </NavDropdown>
               )}
               
           {/* 根據登入狀態顯示內容 */}
             {user ? (
               <>
-                <span style={{ color: "white", marginLeft: "1rem" }}>
+                <span style={{ 
+                  color: "white", 
+                  marginLeft: "1rem",
+                  marginTop: "6px",
+                  display: "inline-block",
+                  }}>
                   👋 歡迎，{user.username}
                   </span>
                 <Button 

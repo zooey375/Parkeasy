@@ -30,7 +30,8 @@ const LoginPage = () => {
       const result = await response.json();
 
       if (response.ok) {
-        setUser(result.data); 
+        const user = result.data || result;
+        setUser(user); 
         alert(" 登入成功！");
         navigate("/"); // 導向首頁或其他你想導向的頁面
       } else {

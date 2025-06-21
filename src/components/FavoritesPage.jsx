@@ -6,25 +6,35 @@ import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 function FavoritesPage() {  
   // 加入收藏
   const [favorites, setFavorites] = useState([]);
-  const userId = 1;
   const navigate = useNavigate(); // 導頁功能，可以在程式裡用程式碼切換頁面，不需要使用者點選<link>才跳轉。
 
   // 載入使用者收藏的資料
   useEffect(() => {
-    axios.get(`http://localhost:8086/api/favorites/${userId}`)
-    //axios.get(`/api/favorites/${userId}`) <-錯誤，會打到 React 自己
+    axios.get("http://localhost:8086/api/favorites", {
+      withCredentials: true // 確保帶上 cookie/session
+    })
       .then((res) => {
         console.log('🪄 成功載入收藏清單:', res.data);
-        setFavorites(res.data);
+
+        // 安全轉型，避免不是陣列就掛掉
+        if (Array.isArray(res.data)) {
+          setFavorites(res.data);
+        } else {
+          console.warn("⚠️ 回傳格式異常，不是陣列:", res.data);
+          setFavorites(res.data);
+        }
       })
       .catch((err) => {
         console.error('😿 載入收藏清單失敗:', err);
+      
       });
-  }, [navigate]);
+  }, []);
 
   // 取消收藏
   const removeFavorite = (parkingLotId) => {
-    axios.delete(`http://localhost:8086/api/favorites/${userId}/${parkingLotId}`)
+    axios.delete(`http://localhost:8086/api/favorites/${parkingLotId}`, {
+      withCredentials: true
+    })
     .then(() => {
       // 用 id 判斷是否移除成功(不是 parkingLotId)
       setFavorites(prev => prev.filter(fav=> fav.id !== parkingLotId));
@@ -59,7 +69,6 @@ function FavoritesPage() {
                   <Button variant="danger" onClick={() => removeFavorite(fav.id)}>
                     💔 移除收藏
                   </Button>
-
                 </Card.Body>
               </Card>
             </Col>

@@ -7,16 +7,21 @@ function AdminUserPage() {
     fetch("http://localhost:8086/api/admin/users", {
       credentials: "include",
     })
-      .then(async (res) => {
+     .then((res) => {
       if (!res.ok) {
-        const errMsg = await res.text();
-        throw new Error(errMsg || "錯誤");
+        throw new Error("請先登入");
       }
       return res.json();
     })
-    .then((data) => setUsers(data))
-    .catch((err) => console.error("載入會員失敗", err.message));
+    .then((data) => {
+      console.log("✅ 載入會員成功", data);
+      setUsers(data);
+    })
+    .catch((err) => {
+      console.error("❌ 載入會員失敗", err.message);
+    });
 }, []);
+
 
   const handleDelete = (id) => {
     if (!window.confirm("確定要刪除此會員嗎？")) return;

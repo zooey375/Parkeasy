@@ -10,6 +10,7 @@ import EmailConfirmSuccess from "./components/EmailConfirmSuccess";
 import LoginPage from './components/LoginPage';
 import { AuthProvider } from './components/AuthContext'; // 要加大括號，表示「指定」來引入原本export出來的變數。
 import AdminUserPage from "./components/AdminUserPage";
+import AdminParkingPage from './components/AdminParkingPage';
 
 import ScrollToTop from './components/ScrollToTop';  // 自動捲到頂部的功能
 
@@ -33,6 +34,7 @@ function App() {
             <Route path="/EmailConfirmSuccess" element={<EmailConfirmSuccess />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/admin/users" element={<AdminUserPage />} />
+            <Route path="/admin/parkinglots" element={<AdminParkingPage />} />
 
           </Routes>
         </div>

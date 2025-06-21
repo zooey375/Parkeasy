@@ -1,34 +1,27 @@
 // Navbar as BsNavbar : 將 react-bootstrap 的 Navbar 取別名，避免與自訂的 Navbar 名稱打架。
 import { useEffect, useState } from 'react';
-
 import { Navbar as BsNavbar, Nav, Container, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
+import { useContext } from 'react';
+import AuthContext from './AuthContext';
+
+
 
 function Navbar() {
-  const [username, setUsername] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
-   // ✅ 當頁面載入時，檢查 localStorage 裡有沒有登入者
-  useEffect(() => {
-    const user = localStorage.getItem('loggedInUser');
-    const admin = localStorage.getItem('isAdmin'); // "true" or "false"
-    if (user) {
-      setUsername(user);
-      setIsAdmin(admin === "true"); // 字串比對
-    }
-  }, []);
-  
-  // 登出功能
   const handleLogout = () => {
-    localStorage.removeItem('loggedInUser');
-    localStorage.removeItem('isAdmin');
-    localStorage.removeItem('userId');  
-    setUsername(null); // 清空狀態
-    setIsAdmin(false);
-    navigate('/auth'); // 登出後導去首頁
+    fetch("http://localhost:8086/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    }).then(() => {
+      setUser(null); // 清除登入狀態
+      navigate("/login"); // 導回登入頁
+    });
   };
+
 
   return (
     <BsNavbar bg="dark" variant="dark" expand="lg" fixed="top">
@@ -42,31 +35,39 @@ function Navbar() {
           {/* 導覽列內容（右側連結） */}
         <BsNavbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto"> {/* ms-auto：往右靠齊 */}
-            {username ? (
-              <>
                 <Nav.Link as={Link} to="/">首頁</Nav.Link>
                 <Nav.Link as={Link} to="/favorites">💜收藏頁面</Nav.Link>
                 <Nav.Link as={Link} to="/list">停車場清單</Nav.Link>
+                <Nav.Link as={Link} to="/admin">後台管理</Nav.Link>
 
-                {/* 僅 admin 可看到後台功能 */}
-                {isAdmin && (
-                  <>
-                    <Nav.Link as={Link} to="/admin">後台管理</Nav.Link>
-                    <Nav.Link as={Link} to="/members">會員管理</Nav.Link>
-                  </>
-                )}
-                {/* 顯示歡迎文字 */}
-                <div className="d-flex align-items-center mx-2 text-white">
-                  👋 {username} 歡迎回來 !
-                </div>
-            
-                <Button variant="outline-light" size="sm" onClick={handleLogout}>
+          {/* 根據登入狀態顯示內容 */}
+            {user ? (
+              <>
+                <span style={{ color: "white", marginLeft: "1rem" }}>👋 歡迎，{user.username}</span>
+                <Button variant="outline-light" 
+                size="sm" 
+                onClick={handleLogout} 
+                style={{ marginLeft: "10px" }}>
                   登出
                 </Button>
               </>
             ) : (
-              <Nav.Link as={Link} to="/auth">登入/註冊</Nav.Link>
+              <>
+                <Button variant="outline-light" 
+                size="sm" 
+                onClick={() => 
+                  navigate("/login")} style={{ marginLeft: "10px" }}>
+                  登入
+                </Button>
+                <Button variant="outline-light" 
+                size="sm" 
+                onClick={() => 
+                  navigate("/register")} style={{ marginLeft: "10px" }}>
+                  註冊
+                </Button>
+              </>
             )}
+
           </Nav>
         </BsNavbar.Collapse>
       </Container>

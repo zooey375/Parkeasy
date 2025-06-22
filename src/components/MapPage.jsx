@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';  //設定 icon、地圖圖層的核心
 import 'leaflet/dist/leaflet.css';
 import Sidebar from './Sidebar'; // 左側篩選欄元件
 import axios from 'axios'; //npm install axios(負責與後端溝通的套件（GET/POST/DELETE))
+import AuthContext from './AuthContext';
 
 // Leaflet 預設圖示設定修正（讓 Marker 正常顯示 Leaflet 的預設圖示，否則會顯示錯誤的問號）
 delete L.Icon.Default.prototype._getIconUrl;
@@ -30,13 +31,6 @@ const cannotParkIcon = new L.Icon({
   popupAnchor: [0, -32],
 });
 
-// 調整價錢： minprice 和 maxprice 改成下拉式選單
-/*const query = new URLSearchParams();
-if(filters.type) query.append('type', filters.friendly);
-if(filters.friendly) query.append('friendly', filters.friendly);
-if(filters.minprice) query.append('minprice', filters.minprice);
-if(filters.maxprice) query.append('maxprice', filters.maxprice);
-*/
 
 function MapPage() {
   const [filters, setFilters] = useState({ type: '', 
@@ -47,28 +41,63 @@ function MapPage() {
 
   const [parkingLots, setParkingLots] = useState([]);
   const [favorites, setFavorites] = useState([]); // 收藏的停車場列表
-  const userId = 1; // ← 之後登入功能完成可改為動態 userId
+  const { user } = useContext(AuthContext); // 從 context 取得使用者
+  const userId = user?.id;
 
  // 載入收藏清單
   useEffect(() => {
-    axios.get(`http://localhost:8086/api/favorites/${userId}`)
+    if (!user) return; // 如果未登入就不發送請求
+
+    axios.get("http://localhost:8086/api/favorites/favorites", {
+      withCredentials: true
+    })
       .then((res) => {
         const data = res.data;
         console.log('✅ 成功收藏清單:', data);
-
         if(Array.isArray(data)) {
-          const favoriteIds = data.map(fav => fav.parkingLotId);
+          const favoriteIds = data.map(fav => fav.parkingLot.id);
           setFavorites(favoriteIds);
-        } else {
-          console.warn('⚠️ 後端回傳的收藏資料不是陣列:', data);
-          setFavorites([]); // 避免地圖 map 出錯  
+        } else { 
+          setFavorites([]);
         }
       })
       .catch(err => {
         console.error('❌ 載入收藏失敗:', err);
       });
 
-  },[]);
+  },[user]);
+
+  // 收藏／取消收藏
+  const toggleFavorite = (parkingLotId) => {
+    if (!userId) {
+      alert('請先登入後再使用收藏功能');
+      return;
+    }
+
+    if (favorites.includes(parkingLotId)) {
+      // 移除收藏
+      axios.delete(`http://localhost:8086/api/favorites/${parkingLotId}`, {
+        withCredentials: true
+      })
+      .then(() => {
+        setFavorites(prev => prev.filter(id => id !== parkingLotId));
+      })
+      .catch(err => {
+        console.error('❌ 取消收藏失敗:', err);
+      });
+  } else {
+    // 加入收藏
+    axios.post(`http://localhost:8086/api/favorites/${parkingLotId}`, null, {
+      withCredentials: true
+    })
+    .then(() => {
+      setFavorites(prev => [...prev, parkingLotId]);
+    })
+    .catch(err => {
+      console.error('❌ 加入收藏失敗:', err);
+    });
+  }
+};
 
   // 當 filters 改變時，重新向後端抓資料
   useEffect(() => {
@@ -84,43 +113,20 @@ function MapPage() {
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
-      console.log('🎯 成功抓到資料:', data);
-
-        if (Array.isArray(data)) {
+      if (Array.isArray(data)) {
           setParkingLots(data);
-        }else {
-          setParkingLots([]); // 避免地圖 map 出錯
-          console.warn('⚠️ 後端回傳的資料不是陣列:', data);
+        } else {
+          console.warn('⚠️ 回傳非陣列:', data);
+          setParkingLots([]);
         }
       })
       .catch((err) => {
-        console.error('❌ 抓資料失敗:', err);
+        console.error('❌ 抓取停車場失敗:', err);
         alert('無法連線到後端，請確認 Spring Boot 是否啟動');
       });
-    },[filters]);
+  }, [filters]);
 
-// 切換收藏狀態(重要)
-  const toggleFavorite = (parkingLotId) => {
-    if (favorites.includes(parkingLotId)) {
-      axios.delete(`http://localhost:8086/api/favorites/${userId}/${parkingLotId}`)
-        .then(() => {
-          setFavorites(prev => prev.filter(id => id !== parkingLotId));
-        })
-        .catch(err => {
-          console.error('❌ 移除收藏失敗:', err);
-        });
-    } else { //尚未收藏->加入收藏
-      axios.post(`http://localhost:8086/api/favorites/add`, null, {
-        params: { userId, parkingLotId }
-      })
-        .then(() => {
-          setFavorites(prev => [...prev, parkingLotId]);
-        })
-        .catch(err => {
-          console.error('❌ 加入收藏失敗:', err);
-        });
-    }
-  };
+  
 
   // 畫面排版+地圖回傳
   return (

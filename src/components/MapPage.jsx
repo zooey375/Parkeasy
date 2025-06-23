@@ -46,26 +46,16 @@ function MapPage() {
 
  // 載入收藏清單
   useEffect(() => {
-    if (!user) return; // 如果未登入就不發送請求
-
-    axios.get("http://localhost:8086/api/favorites/favorites", {
-      withCredentials: true
+  axios.get("http://localhost:8086/api/favorites/favorites", {
+    withCredentials: true  // ✅ 這一行很重要！
+  })
+    .then((res) => {
+      setFavorites(res.data.map((f) => f.parkingLotId));
     })
-      .then((res) => {
-        const data = res.data;
-        console.log('✅ 成功收藏清單:', data);
-        if(Array.isArray(data)) {
-          const favoriteIds = data.map(fav => fav.parkingLot.id);
-          setFavorites(favoriteIds);
-        } else { 
-          setFavorites([]);
-        }
-      })
-      .catch(err => {
-        console.error('❌ 載入收藏失敗:', err);
-      });
-
-  },[user]);
+    .catch((err) => {
+      console.error("❌ 載入收藏失敗:", err);
+    });
+}, []);
 
   // 收藏／取消收藏
   const toggleFavorite = (parkingLotId) => {

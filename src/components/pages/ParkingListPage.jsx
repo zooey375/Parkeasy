@@ -9,7 +9,9 @@ function ParkingListPage() {
 
     // 載入所有停車場資料 (只會執行一次)
     useEffect(() => {
-        axios.get('http://localhost:8086/api/parkinglots') // 後端 API
+        axios.get('http://localhost:8086/api/parkinglots',{
+            withCredentials: true
+        }) 
             .then(res => {
                 console.log('✅ 成功載入停車場資料:', res.data);
                 setParkingLots(res.data);

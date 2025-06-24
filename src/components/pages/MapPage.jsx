@@ -2,9 +2,9 @@ import { useState, useEffect, useContext } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';  //設定 icon、地圖圖層的核心
 import 'leaflet/dist/leaflet.css';
-import Sidebar from './Sidebar'; // 左側篩選欄元件
+import Sidebar from '../layout/Sidebar'; // 左側篩選欄元件
 import axios from 'axios'; //npm install axios(負責與後端溝通的套件（GET/POST/DELETE))
-import AuthContext from './AuthContext';
+import AuthContext from '../../contexts/AuthContext';
 
 // Leaflet 預設圖示設定修正（讓 Marker 正常顯示 Leaflet 的預設圖示，否則會顯示錯誤的問號）
 delete L.Icon.Default.prototype._getIconUrl;
@@ -46,16 +46,19 @@ function MapPage() {
 
  // 載入收藏清單
   useEffect(() => {
+    if (!user) return; // 登入後才觸發'
+
   axios.get("http://localhost:8086/api/favorites/favorites", {
-    withCredentials: true  // ✅ 這一行很重要！
+    withCredentials: true
   })
     .then((res) => {
-      setFavorites(res.data.map((f) => f.parkingLotId));
+      const ids = res.data.map(fav => fav.parkingLotId); // 取出收藏的停車場 ID
+      setFavorites(res.data); 
     })
     .catch((err) => {
       console.error("❌ 載入收藏失敗:", err);
     });
-}, []);
+}, [user]);
 
   // 收藏／取消收藏
   const toggleFavorite = (parkingLotId) => {
@@ -100,7 +103,9 @@ function MapPage() {
     const url = `http://localhost:8086/api/parkinglots/search?${query.toString()}`;
     console.log('傳送查詢網址:', url);
 
-    fetch(url)
+    fetch(url, {
+      credentials: 'include'
+    })
       .then((res) => res.json())
       .then((data) => {
       if (Array.isArray(data)) {

@@ -1,18 +1,26 @@
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import Navbar from './components/Navbar'; // 共用元件
-import MapPage from './components/MapPage';
-import FavoritesPage from './components/FavoritesPage';
-import ParkingListPage from './components/ParkingListPage';
-import AdminPage from './components/AdminPage';
-import RegisterPage from './components/RegisterPage';
-import EmailConfirmSuccess from "./components/EmailConfirmSuccess";
-import LoginPage from './components/LoginPage';
-import { AuthProvider } from './components/AuthContext'; // 要加大括號，表示「指定」來引入原本export出來的變數。
-import AdminUserPage from "./components/AdminUserPage";
-import AdminParkingPage from './components/AdminParkingPage';
+// Layout components
+import Navbar from './components/layout/Navbar'; // 共用元件
+import Sidebar from "./components/layout/Sidebar";
 
-import ScrollToTop from './components/ScrollToTop';  // 自動捲到頂部的功能
+// Page components
+import LoginPage from './components/pages/LoginPage';
+import RegisterPage from './components/pages/RegisterPage';
+import MapPage from './components/pages/MapPage';
+import FavoritesPage from './components/pages/FavoritesPage';
+import ParkingListPage from './components/pages/ParkingListPage';
+import AdminPage from './components/pages/AdminPage';
+import AdminUserPage from "./components/pages/AdminUserPage";
+import AdminParkingPage from './components/pages/AdminParkingPage';
+import EmailConfirmSuccess from "./components/pages/EmailConfirmSuccess";
+
+// Common components
+import ScrollToTop from './components/common/ScrollToTop';  // 自動捲到頂部的功能
+
+// Contexts
+import { AuthProvider } from './contexts/AuthContext'; // 要加大括號，表示「指定」來引入原本export出來的變數。
 
 function App() {
 

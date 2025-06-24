@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { Card, Button, Container, Row, Col } from 'react-bootstrap';
-import useAuthGuard from '../hooks/useAuthGuard'; 
-import AuthContext from './AuthContext';
+import useAuthGuard from '../../hooks/useAuthGuard'; 
+import AuthContext from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 function FavoritesPage() {

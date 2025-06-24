@@ -44,21 +44,21 @@ function MapPage() {
   const { user } = useContext(AuthContext); // 從 context 取得使用者
   const userId = user?.id;
 
- // 載入收藏清單
+  // 載入使用者收藏清單（只有登入才執行）
   useEffect(() => {
-    if (!user) return; // 登入後才觸發'
+    if (!user) return;
 
-  axios.get("http://localhost:8086/api/favorites/favorites", {
-    withCredentials: true
-  })
-    .then((res) => {
-      const ids = res.data.map(fav => fav.parkingLotId); // 取出收藏的停車場 ID
-      setFavorites(res.data); 
+    axios.get("http://localhost:8086/api/favorites/favorites", {
+      withCredentials: true
     })
-    .catch((err) => {
-      console.error("❌ 載入收藏失敗:", err);
-    });
-}, [user]);
+      .then((res) => {
+        const ids = res.data.map(fav => fav.parkingLotId); // 取得收藏ID清單
+        setFavorites(ids);
+      })
+      .catch((err) => {
+        console.error("❌ 載入收藏失敗:", err);
+      });
+  }, [user]);
 
   // 收藏／取消收藏
   const toggleFavorite = (parkingLotId) => {
@@ -68,31 +68,29 @@ function MapPage() {
     }
 
     if (favorites.includes(parkingLotId)) {
-      // 移除收藏
       axios.delete(`http://localhost:8086/api/favorites/${parkingLotId}`, {
         withCredentials: true
       })
-      .then(() => {
-        setFavorites(prev => prev.filter(id => id !== parkingLotId));
+        .then(() => {
+          setFavorites(prev => prev.filter(id => id !== parkingLotId));
+        })
+        .catch(err => {
+          console.error('❌ 取消收藏失敗:', err);
+        });
+    } else {
+      axios.post(`http://localhost:8086/api/favorites/${parkingLotId}`, null, {
+        withCredentials: true
       })
-      .catch(err => {
-        console.error('❌ 取消收藏失敗:', err);
-      });
-  } else {
-    // 加入收藏
-    axios.post(`http://localhost:8086/api/favorites/${parkingLotId}`, null, {
-      withCredentials: true
-    })
-    .then(() => {
-      setFavorites(prev => [...prev, parkingLotId]);
-    })
-    .catch(err => {
-      console.error('❌ 加入收藏失敗:', err);
-    });
-  }
-};
+        .then(() => {
+          setFavorites(prev => [...prev, parkingLotId]);
+        })
+        .catch(err => {
+          console.error('❌ 加入收藏失敗:', err);
+        });
+    }
+  };
 
-  // 當 filters 改變時，重新向後端抓資料
+  // 抓取停車場資料（不論是否登入）
   useEffect(() => {
     const query = new URLSearchParams();
     if (filters.type) query.append('type', filters.type);
@@ -104,11 +102,11 @@ function MapPage() {
     console.log('傳送查詢網址:', url);
 
     fetch(url, {
-      credentials: 'include'
+      credentials: 'include' // 若登入則附帶 cookie
     })
       .then((res) => res.json())
       .then((data) => {
-      if (Array.isArray(data)) {
+        if (Array.isArray(data)) {
           setParkingLots(data);
         } else {
           console.warn('⚠️ 回傳非陣列:', data);
@@ -121,15 +119,9 @@ function MapPage() {
       });
   }, [filters]);
 
-  
-
-  // 畫面排版+地圖回傳
   return (
     <div style={{ display: 'flex', height: '100vh', width: '100%', margin: 0 }}>
-      {/* 左側篩選欄位 */}
       <Sidebar filters={filters} setFilters={setFilters} />
-
-      {/* 右側地圖主畫面 */}
       <div style={{ flex: 1 }}>
         <MapContainer
           center={[25.04, 121.56]}
@@ -141,34 +133,30 @@ function MapPage() {
             url='https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
           />
 
-            {/* 顯示每個停車場地標 */}
-            {Array.isArray(parkingLots) && 
-              parkingLots.map((lot) => {
-               if (!lot.latitude || !lot.longitude) return null; // 防呆：無經緯度就不畫
-                const iconToUse = lot.friendly ? canParkIcon : cannotParkIcon;// 根據是否友善決定圖示
+          {Array.isArray(parkingLots) && parkingLots.map((lot) => {
+            if (!lot.latitude || !lot.longitude) return null;
+            const iconToUse = lot.friendly ? canParkIcon : cannotParkIcon;
+            const isFavorited = favorites.includes(lot.id);
 
-                return (
-                  <Marker
-                    key={lot.id}
-                   position={[lot.latitude, lot.longitude]}
-                   icon={iconToUse}>
-                    <Popup>
-                      <strong>{lot.name}</strong><br />
-                      類型：{lot.type}<br />
-                      友善：{lot.friendly ? '😻 是' : '😿 否'}<br />
-                      收費：{lot.price}<br />
-                      地址：<a href={lot.mapUrl} target="_blank" rel="noreferrer">GoogleMap</a><br />
-                      備註：{lot.description}<br />
-                      <button
-                        onClick={() => toggleFavorite(lot.id)}
-                        style={{ marginTop: '8px', padding: '4px 8px', borderRadius: '6px' }}
-                      >
-                        {favorites.includes(lot.id) ? '💔 取消收藏' : '❤️ 加入收藏'}
-                      </button>
-                    </Popup>
-                  </Marker>
-              );
-            })}
+            return (
+              <Marker key={lot.id} position={[lot.latitude, lot.longitude]} icon={iconToUse}>
+                <Popup>
+                  <strong>{lot.name}</strong><br />
+                  類型：{lot.type}<br />
+                  友善：{lot.friendly ? '😻 是' : '😿 否'}<br />
+                  收費：{lot.price}<br />
+                  地址：<a href={lot.mapUrl} target="_blank" rel="noreferrer">GoogleMap</a><br />
+                  備註：{lot.description}<br />
+                  <button
+                    onClick={() => toggleFavorite(lot.id)}
+                    style={{ marginTop: '8px', padding: '4px 8px', borderRadius: '6px' }}
+                  >
+                    {isFavorited ? '💔 取消收藏' : '❤️ 加入收藏'}
+                  </button>
+                </Popup>
+              </Marker>
+            );
+          })}
         </MapContainer>
       </div>
     </div>

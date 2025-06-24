@@ -2,22 +2,17 @@ import { useEffect, useState, useContext } from 'react';
 import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 import useAuthGuard from '../../hooks/useAuthGuard'; 
 import AuthContext from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
 
 function FavoritesPage() {
   useAuthGuard();
 
   const [favorites, setFavorites] = useState([]);
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
+  // 載入收藏
   useEffect(() => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-
-    fetch(`http://localhost:8086/api/favorites`, {
+    fetch(`http://localhost:8086/api/favorites/favorites`, {
       credentials: 'include',
     })
       .then((res) => {
@@ -32,8 +27,9 @@ function FavoritesPage() {
         console.error('❌ 載入收藏失敗:', err);
         setFavorites([]);
       });
-  }, [user, navigate]);
+  }, []);
 
+  // 移除收藏
   const removeFavorite = (parkingLotId) => {
     fetch(`http://localhost:8086/api/favorites/${parkingLotId}`, {
       method: 'DELETE',
@@ -47,40 +43,52 @@ function FavoritesPage() {
       })
       .catch((err) => {
         console.error('❌ 刪除錯誤:', err);
+        alert('刪除收藏失敗，請稍後再試');
       });
+
   };
 
   return (
-    <Container className="favorites-page mt-4">
+     <Container className="my-4">
       <h2 className="mb-4">我的收藏</h2>
-      <Row xs={1} sm={2} md={3} lg={4} className="g-4">
-        {favorites.map((fav) => (
-          <Col key={fav.id}>
-            <Card className="h-100 shadow-sm">
-              <Card.Body>
-                <Card.Title>{fav.parkingLot.name}</Card.Title>
-                <Card.Text>
-                  📍 類型 : {fav.parkingLot.type} <br />
-                  😺 友善 : {fav.parkingLot.friendly ? '😻 是' : '😿 否'} <br />
-                  💰 收費 : {fav.parkingLot.price} 元<br />
-                  🏠 地址 :
-                  <a href={fav.parkingLot.mapUrl} target="_blank" rel="noreferrer">
-                    🗺️ GoogleMap
-                  </a>
-                  <br />
-                  📝 備註 : {fav.parkingLot.description}
-                </Card.Text>
-                <Button
-                  variant="danger"
-                  onClick={() => removeFavorite(fav.parkingLot.id)}
-                >
-                  💔 移除收藏
-                </Button>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
+
+      {favorites.length === 0 ? (
+        <p>目前尚未收藏任何停車場。</p>
+      ) : (
+        <Row xs={1} md={2} lg={3} className="g-4">
+          {favorites.map((fav) => {
+            const lot = fav.parkingLot;
+            if (!lot) return null;
+
+            return (
+              <Col key={fav.id}>
+                <Card className="h-100 shadow-sm">
+                  <Card.Body>
+                    <Card.Title>{lot.name}</Card.Title>
+                    <Card.Text>
+                      📍 類型 : {lot.type} <br />
+                      😺 友善 : {lot.friendly ? '😻 是' : '😿 否'} <br />
+                      💰 收費 : {lot.price} 元<br />
+                      🏠 地址 :
+                      <a href={lot.mapUrl} target="_blank" rel="noreferrer">
+                        🗺️ GoogleMap
+                      </a>
+                      <br />
+                      📝 備註 : {lot.description}
+                    </Card.Text>
+                    <Button
+                      variant="danger"
+                      onClick={() => removeFavorite(lot.id)}
+                    >
+                      💔 移除收藏
+                    </Button>
+                  </Card.Body>
+                </Card>
+              </Col>
+            );
+          })}
+        </Row>
+      )}
     </Container>
   );
 }

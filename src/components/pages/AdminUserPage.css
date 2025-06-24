@@ -1,52 +1,42 @@
-/* --- 後台管理_停車場清單 --- */
+/* 容器統一寬度與內距 */
 .admin-container {
   padding: 30px;
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
-/* 表單區塊 */
+/* 表單區塊：使用 Grid 排版 */
 .admin-form {
   display: grid;
-  grid-template-columns: 1.2fr 0.4fr 0.2fr 1fr 1.4fr;
+  grid-template-columns: repeat(5, 1fr);
   gap: 12px;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
   align-items: center;
 }
 
+/* 輸入框與選單統一樣式 */
 .admin-form input,
 .admin-form select {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 15px;
+  font-size: 14px;
   width: 100%;
   box-sizing: border-box;
 }
 
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-  font-weight: 500;
+/* 密碼提示文字淡灰色、斜體 */
+.admin-form input[type="password"]::placeholder {
+  font-style: italic;
+  color: #888;
 }
 
-/* 表單多欄資料合併 */
-.admin-form .span-2 {
-  grid-column: span 2;
-}
-.admin-form .span-3 {
-  grid-column: span 3;
-}
-
-/* 表單按鈕區 */
+/* 按鈕容器（佔滿一整行） */
 .form-buttons {
   grid-column: span 5;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-top: 5px;
 }
 
 .form-buttons button {
@@ -64,7 +54,7 @@
   background-color: #343a40;
 }
 
-/* 表格區塊 */
+/* 表格樣式 */
 .admin-table {
   width: 100%;
   border-collapse: collapse;
@@ -75,7 +65,7 @@
 .admin-table th,
 .admin-table td {
   border: 1px solid #ccc;
-  padding: 10px 8px;
+  padding: 10px;
   text-align: center;
 }
 
@@ -92,16 +82,23 @@
   border-radius: 4px;
   cursor: pointer;
   margin: 2px;
-  transition: background-color 0.2s;
 }
 
 .admin-table button:hover {
   background-color: #8c5f5f;
 }
 
+/* 按鈕區塊靠中排 */
 .action-buttons {
   display: flex;
   justify-content: center;
   gap: 8px;
+}
+
+/* 讓帳號信箱不要超出欄位 */
+.admin-table td:nth-child(1),
+.admin-table td:nth-child(2),
+.admin-table td:nth-child(3) {
+  word-break: break-word;
 }
 

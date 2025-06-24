@@ -2,13 +2,19 @@ import { useEffect, useState } from 'react';
 import axios from 'axios'; // 使用 axios 來發送 HTTP 請求
 import { Card, Button, Container, Row, Col } from 'react-bootstrap'; 
 // Container:外框容器、 Row + Col:卡片排版、Card :卡片格式。
+import AuthContext from '../../contexts/AuthContext';
+import { useContext } from "react";
+
 
 
 function ParkingListPage() {
     const [parkingLots, setParkingLots] = useState([]);
+    const { user } = useContext(AuthContext);
 
     // 載入所有停車場資料 (只會執行一次)
     useEffect(() => {
+        if (!user) return; // 登入後才執行，沒登入就不送請求
+
         axios.get('http://localhost:8086/api/parkinglots',{
             withCredentials: true
         }) 
@@ -20,7 +26,7 @@ function ParkingListPage() {
                 console.error('❌ 載入停車場資料失敗:', err);
                 alert('無法載入停車場資料，請檢查後端是否有啟動');
             });
-    }, []);
+    }, [user]);
 
     return (
         <Container className="my-4">

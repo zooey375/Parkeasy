@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./AdminParkingPage.css";
+import "./AdminUserPage.css";
 
 function AdminUserPage() {
   const [users, setUsers] = useState([]);
@@ -92,33 +92,24 @@ function AdminUserPage() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="admin-user-container">
       <h2>會員管理</h2>
-
-      <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="admin-form">
+      <form className="admin-user-form" onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
         <input name="username" placeholder="帳號" value={form.username} onChange={handleChange} required />
         <input name="email" placeholder="信箱" value={form.email} onChange={handleChange} required />
-        <input
-          name="password"
-          type="password"
-          value={form.password}
-          onChange={handleChange}
-          placeholder="密碼（新增時填）"
-        />
+        <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="密碼" />
         <select name="role" value={form.role} onChange={handleChange}>
           <option value="USER">USER</option>
           <option value="ADMIN">ADMIN</option>
         </select>
 
-        <div className="form-buttons">
-          <button type="submit">{isEditing ? "更新" : "新增"}</button>
-          <button type="button" onClick={() => setForm({ id: null, username: "", password: "", email: "", role: "USER" })}>
-            清除
-          </button>
+        <div className="form-user-buttons">
+          <button>新增</button>
+          <button>清除</button>
         </div>
       </form>
 
-        <table className="admin-table">
+        <table className="admin-user-table">
         <thead>
           <tr>
             <th>帳號</th>
@@ -133,13 +124,15 @@ function AdminUserPage() {
               <td>{u.username}</td>
               <td>{u.email}</td>
               <td>{u.role}</td>
-              <td className="action-buttons">
-              {u.role !== "ADMIN" && (
-                <>
-                  <button onClick={() => handleEdit(u)}>編輯</button>
-                  <button onClick={() => handleDelete(u.id)}>刪除</button>
-                </>
-              )}
+              <td className="action-user-buttons">
+                {u.role !== "ADMIN" ? (
+                  <>
+                    <button onClick={() => handleEdit(u)}>編輯</button>
+                    <button onClick={() => handleDelete(u.id)}>刪除</button>
+                  </>
+                ) : (
+                  <span style={{ color: "#aaa" }}>－</span> 
+                 )}  
             </td>
             </tr>
           ))}

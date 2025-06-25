@@ -1,3 +1,4 @@
+// ------ 註冊頁面 ------
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,10 +10,16 @@ function RegisterPage() {
     });
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
 
     // 當表單送出時觸發
     const handleSubmit = async (e) => {
         e.preventDefault();
+    // 防止重複點擊
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
 
         try{
             const response = await fetch('http://localhost:8086/api/auth/register',{
@@ -21,17 +28,27 @@ function RegisterPage() {
                 body: JSON.stringify(formData),
             });
 
+            //  debug 看看
             const result = await response.json();
+            console.log("🔥 回傳狀態 response.ok:", response.ok);
+            console.log("🔥 回傳內容 result:", result);
 
             if(response.ok) {
+                setIsSuccess(true);
+                setMessage(result.message);
                 alert("註冊成功，請前往你的信箱點擊驗證信 ~");
                 navigate('/');  // 導向首頁
             }else {
-            setMessage(result.message || "註冊失敗");
-            }
+            setIsSuccess(false);
+            setMessage(result.message);
+        }
+            
         } catch (error) {
             console.error("發生錯誤:",error);
+            setIsSuccess(false);
             setMessage("註冊失敗，請稍後再試試");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -74,11 +91,16 @@ function RegisterPage() {
                 />
                 </div>
 
-                <button type="submit" style={{ padding: '8px 16px' }}>註冊</button>
+                <button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    style={{ padding: '8px 16px', backgroundColor: isSubmitting ? '#ccc' : '#9e7a7a' }}
+                >
+                {isSubmitting ? "送出中..." : "註冊"}
+                </button>            
             </form>
-
             {message && (
-            <p style={{ marginTop: '15px', color: 'green' }}>{message}</p>
+            <p style={{ marginTop: '15px', color: isSuccess ? 'green' : 'red' }}>{message}</p>
         )}
         </div>
     );

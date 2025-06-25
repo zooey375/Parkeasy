@@ -38,7 +38,7 @@ function FavoritesPage() {
       .then((res) => {
         if (!res.ok) throw new Error('刪除失敗');
         setFavorites((prev) =>
-          prev.filter((fav) => fav.parkingLot.id !== parkingLotId)
+          prev.filter((fav) => fav.id !== parkingLotId)
         );
       })
       .catch((err) => {
@@ -56,37 +56,32 @@ function FavoritesPage() {
         <p>目前尚未收藏任何停車場。</p>
       ) : (
         <Row xs={1} md={2} lg={3} className="g-4">
-          {favorites.map((fav) => {
-            const lot = fav.parkingLot;
-            if (!lot) return null;
-
-            return (
+          {favorites.map((fav) => (
               <Col key={fav.id}>
                 <Card className="h-100 shadow-sm">
                   <Card.Body>
-                    <Card.Title>{lot.name}</Card.Title>
+                    <Card.Title>{fav.name}</Card.Title>
                     <Card.Text>
-                      📍 類型 : {lot.type} <br />
-                      😺 友善 : {lot.friendly ? '😻 是' : '😿 否'} <br />
-                      💰 收費 : {lot.price} 元<br />
+                      📍 類型 : {fav.type} <br />
+                      😺 友善 : {fav.friendly ? '😻 是' : '😿 否'} <br />
+                      💰 收費 : {fav.price} 元<br />
                       🏠 地址 :
-                      <a href={lot.mapUrl} target="_blank" rel="noreferrer">
+                      <a href={fav.mapUrl} target="_blank" rel="noreferrer">
                         🗺️ GoogleMap
                       </a>
                       <br />
-                      📝 備註 : {lot.description}
+                      📝 備註 : {fav.description}
                     </Card.Text>
                     <Button
                       variant="danger"
-                      onClick={() => removeFavorite(lot.id)}
+                      onClick={() => removeFavorite(fav.id)}
                     >
                       💔 移除收藏
                     </Button>
                   </Card.Body>
                 </Card>
               </Col>
-            );
-          })}
+          ))}
         </Row>
       )}
     </Container>

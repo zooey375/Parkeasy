@@ -104,16 +104,16 @@ function AdminParkingPage() {
   };
 
   return (
-    <div className="admin-container">
+    <div className="admin-parking-container">
       <h2>停車場管理</h2>
 
-      <form onSubmit={handleSubmit} className="admin-form">
+      <form onSubmit={handleSubmit} className="admin-parking-form">
         <input name="name" value={formData.name} onChange={handleChange} placeholder="名稱" required />
         <select name="type" value={formData.type} onChange={handleChange}>
           <option value="汽車格">汽車格</option>
           <option value="機車格">機車格</option>
         </select>
-        <label className="checkbox-label">
+        <label className="checkbox-parking-label">
           <input
             type="checkbox"
             name="friendly"
@@ -131,13 +131,13 @@ function AdminParkingPage() {
         <input name="latitude" value={formData.latitude} onChange={handleChange} placeholder="緯度" />
         <input name="longitude" value={formData.longitude} onChange={handleChange} placeholder="經度" />
 
-        <div className="form-buttons">
+        <div className="form-parking-buttons">
           <button type="submit">{isEditing ? "更新" : "新增"}</button>
           <button type="button" onClick={resetForm}>清除</button>
         </div>
       </form>
 
-      <table className="admin-table">
+      <table className="admin-parking-table">
         <thead>
           <tr>
             <th>ID</th>
@@ -158,7 +158,7 @@ function AdminParkingPage() {
               <td>{lot.friendly ? "✅" : "❌"}</td>
               <td>{lot.price} 元</td>
               <td>{lot.address}</td>
-              <td className="action-buttons">
+              <td className="action-parking-buttons">
                 <button onClick={() => handleEdit(lot)}>編輯</button>
                 <button onClick={() => handleDelete(lot.id)}>刪除</button>
               </td>

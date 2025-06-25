@@ -1,22 +1,22 @@
 /* 容器統一寬度與內距 */
-.admin-container {
+.admin-user-container {
   padding: 30px;
   max-width: 1100px;
   margin: 0 auto;
 }
 
 /* 表單區塊：使用 Grid 排版 */
-.admin-form {
+.admin-user-form {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: 1fr 2.5fr 2.5fr 1fr auto;
   gap: 12px;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
   align-items: center;
 }
 
 /* 輸入框與選單統一樣式 */
-.admin-form input,
-.admin-form select {
+.admin-user-form input,
+.admin-user-form select {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -26,20 +26,20 @@
 }
 
 /* 密碼提示文字淡灰色、斜體 */
-.admin-form input[type="password"]::placeholder {
+.admin-user-form input[type="password"]::placeholder {
   font-style: italic;
   color: #888;
 }
 
 /* 按鈕容器（佔滿一整行） */
-.form-buttons {
+.form-user-buttons {
   grid-column: span 5;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   gap: 10px;
 }
 
-.form-buttons button {
+.form-user-buttons button {
   background-color: #495057;
   color: white;
   border: none;
@@ -49,32 +49,31 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
-
-.form-buttons button:hover {
+.form-user-buttons button:hover {
   background-color: #343a40;
 }
 
 /* 表格樣式 */
-.admin-table {
+.admin-user-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
   font-size: 15px;
 }
 
-.admin-table th,
-.admin-table td {
+.admin-user-table th,
+.admin-user-table td {
   border: 1px solid #ccc;
   padding: 10px;
   text-align: center;
 }
 
-.admin-table th {
+.admin-user-table th {
   background-color: #f1f3f5;
   font-weight: 600;
 }
 
-.admin-table button {
+.admin-user-table button {
   background-color: #a67a7a;
   color: white;
   border: none;
@@ -84,21 +83,21 @@
   margin: 2px;
 }
 
-.admin-table button:hover {
+.admin-user-table button:hover {
   background-color: #8c5f5f;
 }
 
 /* 按鈕區塊靠中排 */
-.action-buttons {
+.action-user-buttons {
   display: flex;
   justify-content: center;
   gap: 8px;
 }
 
 /* 讓帳號信箱不要超出欄位 */
-.admin-table td:nth-child(1),
-.admin-table td:nth-child(2),
-.admin-table td:nth-child(3) {
+.admin-user-table td:nth-child(1),
+.admin-user-table td:nth-child(2),
+.admin-user-table td:nth-child(3) {
   word-break: break-word;
 }
 

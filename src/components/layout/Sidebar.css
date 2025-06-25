@@ -66,3 +66,28 @@
   color: #444;
 }
 
+/* 圖示說明框 */
+.legend-box {
+  padding: 12px;
+  background-color: #f7f0f0d8;
+  border-radius: 12px;
+  border: 1px solid #efeaea;
+  margin-top: 150px; 
+}
+.legend-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #444;
+  margin-bottom: 10px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.legend-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}

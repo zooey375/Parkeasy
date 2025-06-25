@@ -63,6 +63,20 @@ function Sidebar({ filters, setFilters }) {
           </select>
         </div>
       </div>
+
+      {/* 圖示說明框 */}
+      <div className="legend-box">
+        <h3 className="legend-title">圖示說明</h3>
+        <div className="legend-item">
+          <img src="/images/parking-icon.png" alt="友善圖示" className="legend-icon" />
+          <span>友善停車場</span>
+        </div>
+        <div className="legend-item">
+          <img src="/images/noparking-icon.png" alt="不友善圖示" className="legend-icon" />
+          <span>不友善停車場</span>
+        </div>
+      </div>
+      
     </div>
   );
 }

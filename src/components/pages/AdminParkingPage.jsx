@@ -38,33 +38,47 @@ function AdminParkingPage() {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    const method = isEditing ? "PUT" : "POST";
-    const url = isEditing
-      ? `http://localhost:8086/api/parkinglots/${formData.id}`
-      : `http://localhost:8086/api/parkinglots`;
+  e.preventDefault();
 
-    fetch(url, {
-      method: method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(formData),
+  // 準備資料，轉型處理，id 新增時不送
+  const dataToSend = { ...formData };
+  if (!isEditing) delete dataToSend.id; // 新增不送 id
+
+  // 型別轉換
+  dataToSend.price = formData.price === "" ? 0 : Number(formData.price);
+  dataToSend.latitude = formData.latitude === "" ? 0 : Number(formData.latitude);
+  dataToSend.longitude = formData.longitude === "" ? 0 : Number(formData.longitude);
+
+  // 如果 description/address/mapUrl 空字串可保留（不會報錯）
+
+  fetch(isEditing
+    ? `http://localhost:8086/api/parkinglots/${formData.id}`
+    : `http://localhost:8086/api/parkinglots`, {
+    method: isEditing ? "PUT" : "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(dataToSend),
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error("伺服器錯誤，請檢查後端 console！");
+      return res.json();
     })
-      .then((res) => res.json())
-      .then((data) => {
-        if (isEditing) {
-          setParkingLots(
-            parkingLots.map((lot) => (lot.id === data.id ? data : lot))
-          );
-        } else {
-          setParkingLots([...parkingLots, data]);
-        }
-        resetForm();
-      })
-      .catch((err) => console.error("❌ 儲存失敗:", err));
-  };
+    .then((data) => {
+      if (isEditing) {
+        setParkingLots(parkingLots.map(lot => lot.id === data.id ? data : lot));
+      } else {
+        setParkingLots([...parkingLots, data]);
+      }
+      resetForm();
+    })
+    .catch((err) => {
+      alert("❌ 儲存失敗，請檢查欄位與名稱是否重複");
+      console.error(err);
+    });
+};
+
 
   const handleEdit = (lot) => {
     setFormData(lot);
@@ -124,12 +138,10 @@ function AdminParkingPage() {
         </label>
         <input type="number" name="price" value={formData.price} onChange={handleChange} placeholder="價格" />
         <input name="description" value={formData.description} onChange={handleChange} placeholder="說明" />
-
-        <input name="address" value={formData.address} onChange={handleChange} placeholder="地址" className="span-2" />
-        <input name="mapUrl" value={formData.mapUrl} onChange={handleChange} placeholder="Google Map 連結" className="span-2" />
-
+        <input name="address" value={formData.address} onChange={handleChange} placeholder="地址" />
         <input name="latitude" value={formData.latitude} onChange={handleChange} placeholder="緯度" />
         <input name="longitude" value={formData.longitude} onChange={handleChange} placeholder="經度" />
+        <input name="mapUrl" value={formData.mapUrl} onChange={handleChange} placeholder="Google Map 連結" />
 
         <div className="form-parking-buttons">
           <button type="submit">{isEditing ? "更新" : "新增"}</button>
@@ -140,7 +152,7 @@ function AdminParkingPage() {
       <table className="admin-parking-table">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>序號</th>
             <th>名稱</th>
             <th>類型</th>
             <th>友善</th>
@@ -150,9 +162,9 @@ function AdminParkingPage() {
           </tr>
         </thead>
         <tbody>
-          {parkingLots.map((lot) => (
+          {parkingLots.map((lot, index) => (
             <tr key={lot.id}>
-              <td>{lot.id}</td>
+              <td>{index + 1}</td>
               <td>{lot.name}</td>
               <td>{lot.type}</td>
               <td>{lot.friendly ? "✅" : "❌"}</td>
